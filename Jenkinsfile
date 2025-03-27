@@ -1,20 +1,25 @@
 pipeline {
     agent any
-
+    environment {
+        DOCKER_CREDENTIALS = credentials('dockerhub')
+    }
     stages {
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t node-app .'
-                sh 'docker tag node-app:latest yogeshwaran24/sample:v1'
-                withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'DOCK_PASS', usernameVariable: 'DOCK_USER')]) {
-                    sh "echo $DOCK_PASS | docker login -u $DOCK_USER --password-stdin"
-                    sh 'docker push yogeshwaran24/sample:v1'
-                }
+                sh 'sudo docker build -t yogeshwaran24/sample:v1 .'
             }
         }
-        stage('Deploy to Production') {
+        stage('Push to Docker Hub') {
             steps {
-                sh 'ssh deploy-user@prod-server "docker pull your-username/node-app:latest && docker run -d -p 3000:3000 your-username/node-app:latest"'
+                sh '''
+                echo $DOCKER_CREDENTIALS_PSW | docker login -u yogeshwaran24 --password-stdin
+                sudo docker push yogeshwaran24/sample:v1 
+                '''
+            }
+        }
+        stage('Run Docker Container') {
+            steps {
+                sh 'sudo docker run -d -p 80:3000 yogeshwaran24/sample:v1'
             }
         }
     }
