@@ -1,18 +1,21 @@
 pipeline {
     agent any
     stages {
-        stage('Verify Docker') {
+        stage('Build') {
             steps {
-                script {
-                    sh 'docker --version'
-                }
+                echo 'Building the project...'
+                // Add your build steps here
             }
         }
-        stage('Build Docker Image') {
+         stage('Build') {
             steps {
-                script {
-                    docker.build("yogeshwaran24/sample${BUILD_NUMBER}")
-                }
+                echo 'Building the project...'
+                // Add your build steps here
+            }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying the project...'
+                // Add your deployment steps here
             }
         }
     }
