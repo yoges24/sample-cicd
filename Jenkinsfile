@@ -6,7 +6,9 @@ pipeline {
     stages {
         stage('Build Docker Image') {
             steps {
-                sh 'docker.build("yogeshwaran24/sample"+"$BUILD_NUMBER")'
+                script {
+                    docker.build("yogeshwaran24/sample"+"$BUILD_NUMBER")
+                }
             }
         }
         // stage('Push to Docker Hub') {
